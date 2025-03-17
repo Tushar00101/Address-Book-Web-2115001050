@@ -191,23 +191,23 @@ namespace AddressBookApplication.Controllers
                 string token = HttpContext.Request.Query["token"];
                 if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(resetDTO.Password))
                 {
-                    return BadRequest(new { message = "Token and new password are required." });
+                    return BadRequest(new ResponseModel<Object> { Success = true, Message = "Token and new password are required." });
                 }
 
                 var email = _jwtService.ValidateResetToken(token);
                 if (email == null)
                 {
-                    return Unauthorized(new { message = "Invalid or expired token." });
+                    return Unauthorized(new ResponseModel<Object> { Success=false,Message = "Invalid or expired token." });
                 }
 
                 bool updateSuccess = _userBL.UpdateUserPassword(email, resetDTO);
                 if (!updateSuccess)
                 {
-                    return BadRequest(new { message = "Failed to update password." });
+                    return BadRequest(new ResponseModel<Object> { Success=false,Message = "Failed to update password." });
                 }
 
                 logger.Info("Password changed successfully.");
-                return Ok(new { message = "Password changed successfully!" });
+                return Ok(new ResponseModel<Object> { Success=true,Message = "Password changed successfully!" });
             }
             catch (Exception ex)
             {

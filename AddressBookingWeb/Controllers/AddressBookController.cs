@@ -152,7 +152,12 @@ namespace AddressBookApplication.Controllers
             {
                 logger.Info("GET request received to fetch all address book entries (Admin Only)");
                 var response = _addressBookBL.GetAllContacts();
-                return Ok(response);
+                if (response == null)
+                {
+                    return Ok(new ResponseModel<Object> { Success = false, Message = "No contact found", Data = response });
+                }
+
+                return Ok(new ResponseModel<Object> { Success = true, Message = "All Contacts", Data = response });
             }
             catch (Exception ex)
             {
@@ -175,7 +180,7 @@ namespace AddressBookApplication.Controllers
                 {
                     return Ok(new ResponseModel<Object> { Success = true, Message = "Contact is deleted", Data = response });
                 }
-                return Ok(new ResponseModel<Object> { Success = false, Message = "No co", Data = response });
+                return Ok(new ResponseModel<Object> { Success = false, Message = "No contact is found", Data = response });
 
             }
             catch (Exception ex)
